@@ -81,12 +81,19 @@ public class GenreController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var genre = await _context.Genres.FindAsync(id);
-
         if (genre == null) return NotFound();
+        return View(genre);
+    }
 
+    // POST: /Genre/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var genre = await _context.Genres.FindAsync(id);
+        if (genre == null) return NotFound();
         _context.Genres.Remove(genre);
         await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Index));
     }
 }

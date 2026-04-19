@@ -103,13 +103,23 @@ public class BorrowingController : Controller
     // GET: /Borrowing/Delete/5
     public async Task<IActionResult> Delete(int id)
     {
-        var borrowing = await _context.Borrowings.FindAsync(id);
-
+        var borrowing = await _context.Borrowings
+            .Include(br => br.Book)
+            .Include(br => br.User)
+            .FirstOrDefaultAsync(br => br.Id == id);
         if (borrowing == null) return NotFound();
+        return View(borrowing);
+    }
 
+    // POST: /Borrowing/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var borrowing = await _context.Borrowings.FindAsync(id);
+        if (borrowing == null) return NotFound();
         _context.Borrowings.Remove(borrowing);
         await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Index));
     }
 }

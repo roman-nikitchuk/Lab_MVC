@@ -81,12 +81,19 @@ public class AuthorController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var author = await _context.Authors.FindAsync(id);
-
         if (author == null) return NotFound();
+        return View(author);
+    }
 
+    // POST: /Author/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var author = await _context.Authors.FindAsync(id);
+        if (author == null) return NotFound();
         _context.Authors.Remove(author);
         await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Index));
     }
 }

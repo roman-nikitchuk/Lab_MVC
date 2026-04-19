@@ -101,13 +101,23 @@ public class BookController : Controller
     // GET: /Book/Delete/5
     public async Task<IActionResult> Delete(int id)
     {
-        var book = await _context.Books.FindAsync(id);
-
+        var book = await _context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Genre)
+            .FirstOrDefaultAsync(b => b.Id == id);
         if (book == null) return NotFound();
+        return View(book);
+    }
 
+    // POST: /Book/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var book = await _context.Books.FindAsync(id);
+        if (book == null) return NotFound();
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Index));
     }
 }
