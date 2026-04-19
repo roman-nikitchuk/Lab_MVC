@@ -84,12 +84,19 @@ public class UserController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var user = await _context.Users.FindAsync(id);
-
         if (user == null) return NotFound();
+        return View(user);
+    }
 
+    // POST: /User/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null) return NotFound();
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Index));
     }
 }
