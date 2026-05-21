@@ -1,5 +1,154 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Library_Project.Models.User
+
 @{
+    ViewData["Title"] = "Add User";
 }
+
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6b7280;
+        font-size: 14px;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.15s;
+    }
+
+        .back-link:hover {
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .back-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+    .form-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        padding: 28px;
+        max-width: 560px;
+    }
+
+        .form-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #111827;
+        outline: none;
+        transition: border-color 0.15s;
+        background: #fff;
+    }
+
+        .form-control:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+        }
+
+    .text-danger {
+        font-size: 12px;
+        color: #dc2626;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .btn-save {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+        .btn-save:hover {
+            background: #0f766e;
+        }
+
+    .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+            color: #374151;
+            text-decoration: none;
+        }
+</style>
+
+<a asp-action="Index" class="back-link">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    Back to Users
+</a>
+
+<div class="form-card">
+    <h2>Add New User</h2>
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label">Full Name</label>
+            <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" placeholder="Enter email" type="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PasswordHash" class="form-label">Password</label>
+            <input asp-for="PasswordHash" class="form-control" placeholder="Enter password" type="password" />
+            <span asp-validation-for="PasswordHash" class="text-danger"></span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Save User</button>
+            <a asp-action="Index" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>

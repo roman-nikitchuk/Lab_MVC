@@ -1,5 +1,304 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Library_Project.Models.Genre>
+
 @{
+    ViewData["Title"] = "Genres";
 }
+
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .page-header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .btn-add {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s;
+    }
+
+    .btn-add:hover {
+        background: #0f766e;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    .table thead tr {
+        background: #f9fafb;
+    }
+
+    .table thead th {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 14px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        border-top: none;
+        text-align: left;
+    }
+
+    .table tbody td {
+        padding: 14px 20px;
+        font-size: 14px;
+        color: #374151;
+        border-color: #f3f4f6;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .table tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    /* COLUMN WIDTHS */
+
+        .table th,
+        .table td {
+            width: 33.333%;
+        }
+
+    .genre-badge {
+        background: #f0fdf4;
+        color: #15803d;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .genre-badge svg {
+        width: 12px;
+        height: 12px;
+        stroke: #15803d;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-details {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+    .btn-details:hover {
+        background: #e0f2fe;
+        color: #0369a1;
+        text-decoration: none;
+    }
+
+    .btn-edit {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+    .btn-edit:hover {
+        background: #fef9c3;
+        color: #854d0e;
+        text-decoration: none;
+    }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .btn-delete:hover {
+        background: #fee2e2;
+        color: #dc2626;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+    }
+
+    .empty-state svg {
+        width: 48px;
+        height: 48px;
+        stroke: #d1d5db;
+        margin-bottom: 16px;
+    }
+
+    .empty-state p {
+        font-size: 15px;
+    }
+</style>
+
+<div class="page-header">
+
+    <h2>Genres</h2>
+
+    <a asp-action="Create" class="btn-add">
+
+        <svg width="16"
+             height="16"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24">
+
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4" />
+        </svg>
+
+        Add Genre
+
+    </a>
+
+</div>
+
+<div class="table-card">
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+
+            <svg fill="none" viewBox="0 0 24 24">
+
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 8V5a2 2 0 012-2z" />
+
+            </svg>
+
+            <p>No genres yet. Add your first genre!</p>
+
+        </div>
+    }
+    else
+    {
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Genre</th>
+                    <th>Books</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var genre in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <span class="genre-badge">
+
+                                <svg fill="none" viewBox="0 0 24 24">
+
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 8V5a2 2 0 012-2z" />
+
+                                </svg>
+
+                                @genre.Name
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            @(genre.Books?.Count ?? 0) books
+                        </td>
+
+                        <td>
+
+                            <div class="action-btns">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@genre.Id"
+                                   class="btn-action btn-details">
+                                    Details
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@genre.Id"
+                                   class="btn-action btn-edit">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@genre.Id"
+                                   class="btn-action btn-delete">
+                                    Delete
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>

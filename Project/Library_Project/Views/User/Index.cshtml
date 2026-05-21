@@ -1,5 +1,253 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Library_Project.Models.User>
+
 @{
+    ViewData["Title"] = "Users";
 }
+
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+    .btn-add {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s;
+    }
+
+        .btn-add:hover {
+            background: #0f766e;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            width: 25%;
+        }
+
+        .table thead tr {
+            background: #f9fafb;
+        }
+
+        .table thead th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            border-top: none;
+        }
+
+        .table tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #374151;
+            border-color: #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #e1f5ee;
+        color: #0d9488;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: #111827;
+    }
+
+    .user-email {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    .badge-date {
+        background: #f0f9ff;
+        color: #0369a1;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+
+    .btn-details {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+        .btn-details:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+        }
+
+    .btn-edit {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+        .btn-edit:hover {
+            background: #fef9c3;
+            color: #854d0e;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+    }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: #d1d5db;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+</style>
+
+<div class="page-header">
+    <h2>Users</h2>
+    <a asp-action="Create" class="btn-add">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add User
+    </a>
+</div>
+
+<div class="table-card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <p>No users yet. Add your first user!</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">@user.Name.Substring(0, 1).ToUpper()</div>
+                                <span class="user-name">@user.Name</span>
+                            </div>
+                        </td>
+                        <td><span class="user-email">@user.Email</span></td>
+                        <td><span class="badge-date">@user.CreatedAt.ToString("dd MMM yyyy")</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <a asp-action="Details" asp-route-id="@user.Id" class="btn-action btn-details">Details</a>
+                                <a asp-action="Edit" asp-route-id="@user.Id" class="btn-action btn-edit">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@user.Id" class="btn-action btn-delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

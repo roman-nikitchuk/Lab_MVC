@@ -43,4 +43,13 @@ public class AppDbContext : DbContext
             .Property(br => br.Status)
             .HasConversion<string>();
     }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+    {
+        builder.Properties<DateTime>()
+            .HaveConversion<UtcDateTimeConverter>();
+
+        builder.Properties<DateTime?>()
+            .HaveConversion<UtcNullableDateTimeConverter>();
+    }
 }
