@@ -15,14 +15,23 @@ public class BookController : Controller
     }
 
     // GET: /Book
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? search)
     {
-        var books = await _context.Books
+        var books = _context.Books
             .Include(b => b.Author)
             .Include(b => b.Genre)
-            .ToListAsync();
+            .AsQueryable();
 
-        return View(books);
+        if (!string.IsNullOrEmpty(search))
+        {
+            books = books.Where(b =>
+                b.Name.ToLower().Contains(search.ToLower()) ||
+                b.Author!.Name.ToLower().Contains(search.ToLower()) ||
+                b.Genre!.Name.ToLower().Contains(search.ToLower()));
+        }
+
+        ViewBag.Search = search;
+        return View(await books.ToListAsync());
     }
 
     // GET: /Book/Details/5
@@ -114,10 +123,29 @@ public class BookController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var book = await _context.Books.FindAsync(id);
+        var book = await _context.Books
+            .Include(b => b.Borrowings)
+            .FirstOrDefaultAsync(b => b.Id == id);
+
         if (book == null) return NotFound();
+
+        var hasActiveBorrowings = book.Borrowings != null &&
+            book.Borrowings.Any(br => br.Status == BorrowingStatus.Active);
+
+        if (hasActiveBorrowings)
+        {
+            TempData["Error"] = "Cannot delete book with active borrowings. Please return all copies first.";
+            return RedirectToAction(nameof(Delete), new { id });
+        }
+
+        if (book.Borrowings != null && book.Borrowings.Any())
+        {
+            _context.Borrowings.RemoveRange(book.Borrowings);
+        }
+
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
+
         return RedirectToAction(nameof(Index));
     }
 }

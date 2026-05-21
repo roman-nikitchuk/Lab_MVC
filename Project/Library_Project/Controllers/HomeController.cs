@@ -1,20 +1,28 @@
-using System.Diagnostics;
+using Library_Project.Data;
 using Library_Project.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Library_Project.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.TotalBooks = await _context.Books.CountAsync();
+            ViewBag.TotalAuthors = await _context.Authors.CountAsync();
+            ViewBag.TotalGenres = await _context.Genres.CountAsync();
+            ViewBag.TotalUsers = await _context.Users.CountAsync();
             return View();
         }
 

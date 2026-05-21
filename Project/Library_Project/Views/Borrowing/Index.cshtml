@@ -1,5 +1,254 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Library_Project.Models.Borrowing>
+
 @{
+    ViewData["Title"] = "Borrowings";
 }
+
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+    .btn-add {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s;
+    }
+
+        .btn-add:hover {
+            background: #0f766e;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            width: 16.666%;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .table thead tr {
+            background: #f9fafb;
+        }
+
+        .table thead th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            border-top: none;
+        }
+
+        .table tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #374151;
+            border-color: #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+    .badge {
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .badge-active {
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .badge-returned {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .badge-overdue {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .badge-date {
+        background: #f0f9ff;
+        color: #0369a1;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+    }
+
+    .btn-action {
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+
+    .btn-details {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+        .btn-details:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+        }
+
+    .btn-edit {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+        .btn-edit:hover {
+            background: #fef9c3;
+            color: #854d0e;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+    }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: #d1d5db;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+</style>
+
+<div class="page-header">
+    <h2>Borrowings</h2>
+    <a asp-action="Create" class="btn-add">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Borrowing
+    </a>
+</div>
+
+<div class="table-card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <p>No borrowings yet. Create your first borrowing!</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>User</th>
+                    <th>Borrow Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td style="font-weight:500; color:#111827;">@b.Book?.Name</td>
+                        <td>@b.User?.Name</td>
+                        <td><span class="badge-date">@b.BorrowDate.ToString("dd MMM yyyy")</span></td>
+                        <td>
+                            @if (b.ReturnDate.HasValue)
+                            {
+                                <span class="badge-date">@b.ReturnDate.Value.ToString("dd MMM yyyy")</span>
+                            }
+                            else
+                            {
+                                <span style="color:#9ca3af; font-size:13px;">—</span>
+                            }
+                        </td>
+                        <td><span class="badge badge-@b.Status.ToString().ToLower()">@b.Status</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <a asp-action="Details" asp-route-id="@b.Id" class="btn-action btn-details">Details</a>
+                                <a asp-action="Edit" asp-route-id="@b.Id" class="btn-action btn-edit">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@b.Id" class="btn-action btn-delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

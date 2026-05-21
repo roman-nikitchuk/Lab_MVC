@@ -1,5 +1,187 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Library_Project.Models.Book
+
 @{
+    ViewData["Title"] = "Edit Book";
 }
+
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6b7280;
+        font-size: 14px;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: color 0.15s;
+    }
+
+        .back-link:hover {
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .back-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+    .form-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        padding: 28px;
+        max-width: 560px;
+    }
+
+        .form-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #111827;
+        outline: none;
+        transition: border-color 0.15s;
+        background: #fff;
+    }
+
+        .form-control:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .text-danger {
+        font-size: 12px;
+        color: #dc2626;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #f3f4f6;
+    }
+
+    .btn-save {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+        .btn-save:hover {
+            background: #0f766e;
+        }
+
+    .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+            color: #374151;
+            text-decoration: none;
+        }
+</style>
+
+<a asp-action="Index" class="back-link">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    Back to Books
+</a>
+
+<div class="form-card">
+    <h2>Edit Book</h2>
+    <form asp-action="Edit" method="post">
+        <input asp-for="Id" type="hidden" />
+        <div class="form-group">
+            <label asp-for="Name" class="form-label">Title</label>
+            <input asp-for="Name" class="form-control" placeholder="Enter book title" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AuthorId" class="form-label">Author</label>
+            <select asp-for="AuthorId" class="form-control">
+                <option value="">— Select Author —</option>
+                @foreach (var author in ViewBag.Authors as List<Library_Project.Models.Author>)
+                {
+                    <option value="@author.Id">@author.Name</option>
+                }
+            </select>
+            <span asp-validation-for="AuthorId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="GenreId" class="form-label">Genre</label>
+            <select asp-for="GenreId" class="form-control">
+                <option value="">— Select Genre —</option>
+                @foreach (var genre in ViewBag.Genres as List<Library_Project.Models.Genre>)
+                {
+                    <option value="@genre.Id">@genre.Name</option>
+                }
+            </select>
+            <span asp-validation-for="GenreId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PublishYear" class="form-label">Publish Year</label>
+            <input asp-for="PublishYear" class="form-control" type="number" />
+            <span asp-validation-for="PublishYear" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CopiesCount" class="form-label">Copies Count</label>
+            <input asp-for="CopiesCount" class="form-control" type="number" />
+            <span asp-validation-for="CopiesCount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description" class="form-label">Description (optional)</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-save">Save Changes</button>
+            <a asp-action="Index" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>

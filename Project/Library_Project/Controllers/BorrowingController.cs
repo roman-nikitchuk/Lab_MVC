@@ -22,6 +22,18 @@ public class BorrowingController : Controller
             .Include(br => br.User)
             .ToListAsync();
 
+        foreach (var b in borrowings)
+        {
+            if (b.Status == BorrowingStatus.Active &&
+                b.ReturnDate.HasValue &&
+                b.ReturnDate.Value < DateTime.UtcNow)
+            {
+                b.Status = BorrowingStatus.Overdue;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
         return View(borrowings);
     }
 
@@ -59,7 +71,19 @@ public class BorrowingController : Controller
         }
 
         borrowing.BorrowDate = DateTime.UtcNow;
-        borrowing.Status = BorrowingStatus.Active;
+
+        if (borrowing.ReturnDate.HasValue)
+        {
+            borrowing.Status = BorrowingStatus.Returned;
+        }
+        else if ((DateTime.UtcNow - borrowing.BorrowDate).TotalDays > 30)
+        {
+            borrowing.Status = BorrowingStatus.Overdue;
+        }
+        else
+        {
+            borrowing.Status = BorrowingStatus.Active;
+        }
 
         _context.Borrowings.Add(borrowing);
         await _context.SaveChangesAsync();
@@ -81,7 +105,7 @@ public class BorrowingController : Controller
     }
 
     // POST: /Borrowing/Edit/5
-    [HttpPost]
+    [HttpPost, ActionName("Edit")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Borrowing borrowing)
     {
@@ -92,6 +116,19 @@ public class BorrowingController : Controller
             ViewBag.Books = await _context.Books.ToListAsync();
             ViewBag.Users = await _context.Users.ToListAsync();
             return View(borrowing);
+        }
+
+        if (borrowing.ReturnDate.HasValue)
+        {
+            borrowing.Status = BorrowingStatus.Returned;
+        }
+        else if ((DateTime.UtcNow - borrowing.BorrowDate).TotalDays > 30)
+        {
+            borrowing.Status = BorrowingStatus.Overdue;
+        }
+        else
+        {
+            borrowing.Status = BorrowingStatus.Active;
         }
 
         _context.Borrowings.Update(borrowing);

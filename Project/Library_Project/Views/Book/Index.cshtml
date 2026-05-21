@@ -1,5 +1,332 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Library_Project.Models.Book>
+
 @{
+    ViewData["Title"] = "Books";
 }
+
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+    .btn-add {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s;
+    }
+
+        .btn-add:hover {
+            background: #0f766e;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table thead tr {
+            background: #f9fafb;
+        }
+
+        .table thead th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            border-top: none;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #374151;
+            border-color: #f3f4f6;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+            .table tbody tr:hover {
+                background: #f9fafb;
+            }
+
+        /* WIDTHS */
+
+        .table th:nth-child(1),
+        .table td:nth-child(1) {
+            width: 22%;
+        }
+
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            width: 22%;
+        }
+
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+            width: 14%;
+        }
+
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
+            width: 10%;
+        }
+
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+            width: 10%;
+        }
+
+        .table th:nth-child(6),
+        .table td:nth-child(6) {
+            width: 22%;
+        }
+
+    .book-title {
+        font-weight: 500;
+        color: #111827;
+    }
+
+    .badge {
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .badge-genre {
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .badge-year {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+    .badge-copies {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-details {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+        .btn-details:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+        }
+
+    .btn-edit {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+        .btn-edit:hover {
+            background: #fef9c3;
+            color: #854d0e;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+    }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: #d1d5db;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+</style>
+
+<div class="page-header">
+    <h2>Books</h2>
+
+    <a asp-action="Create" class="btn-add">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4" />
+        </svg>
+
+        Add Book
+    </a>
+</div>
+
+<div class="table-card">
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+
+            <svg fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+
+            <p>No books yet. Add your first book!</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Year</th>
+                    <th>Copies</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var book in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <span class="book-title">
+                                @book.Name
+                            </span>
+                        </td>
+
+                        <td>
+                            @book.Author?.Name
+                        </td>
+
+                        <td>
+                            <span class="badge badge-genre">
+                                @book.Genre?.Name
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-year">
+                                @book.PublishYear
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-copies">
+                                @book.CopiesCount
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="action-btns">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@book.Id"
+                                   class="btn-action btn-details">
+                                    Details
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@book.Id"
+                                   class="btn-action btn-edit">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@book.Id"
+                                   class="btn-action btn-delete">
+                                    Delete
+                                </a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>

@@ -1,5 +1,244 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<Library_Project.Models.Author>
+
 @{
+    ViewData["Title"] = "Authors";
 }
+
+<style>
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+    .btn-add {
+        background: #0d9488;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s;
+    }
+
+        .btn-add:hover {
+            background: #0f766e;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .table-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .table {
+        margin: 0;
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            width: 33.333%;
+        }
+
+        .table thead tr {
+            background: #f9fafb;
+        }
+
+        .table thead th {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            border-top: none;
+        }
+
+        .table tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #374151;
+            border-color: #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+    .author-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #e1f5ee;
+        color: #0d9488;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .author-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .author-name {
+        font-weight: 500;
+        color: #111827;
+    }
+
+    .badge-country {
+        background: #f0f9ff;
+        color: #0369a1;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .action-btns {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+
+    .btn-details {
+        background: #f0f9ff;
+        color: #0369a1;
+    }
+
+        .btn-details:hover {
+            background: #e0f2fe;
+            color: #0369a1;
+            text-decoration: none;
+        }
+
+    .btn-edit {
+        background: #fefce8;
+        color: #854d0e;
+    }
+
+        .btn-edit:hover {
+            background: #fef9c3;
+            color: #854d0e;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+            color: #dc2626;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+    }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            stroke: #d1d5db;
+            margin-bottom: 16px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+</style>
+
+<div class="page-header">
+    <h2>Authors</h2>
+    <a asp-action="Create" class="btn-add">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Author
+    </a>
+</div>
+
+<div class="table-card">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg fill="none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <p>No authors yet. Add your first author!</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Author</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var author in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="author-info">
+                                <div class="author-avatar">
+                                    @author.Name.Substring(0, 1).ToUpper()
+                                </div>
+                                <span class="author-name">@author.Name</span>
+                            </div>
+                        </td>
+                        <td><span class="badge-country">@author.Country</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <a asp-action="Details" asp-route-id="@author.Id" class="btn-action btn-details">Details</a>
+                                <a asp-action="Edit" asp-route-id="@author.Id" class="btn-action btn-edit">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@author.Id" class="btn-action btn-delete">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
